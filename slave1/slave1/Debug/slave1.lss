@@ -1,0 +1,420 @@
+
+slave1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  00800100  000002ac  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         00000238  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000002  00800100  00800100  000002ac  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  000002ac  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002dc  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 000000b8  00000000  00000000  0000031c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00000b20  00000000  00000000  000003d4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 00000841  00000000  00000000  00000ef4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00000601  00000000  00000000  00001735  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000120  00000000  00000000  00001d38  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000005a3  00000000  00000000  00001e58  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    0000026e  00000000  00000000  000023fb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000078  00000000  00000000  00002669  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 3b 00 	jmp	0x76	; 0x76 <__ctors_end>
+   4:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+   8:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+   c:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  10:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  14:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  18:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  1c:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  20:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  24:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  28:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  2c:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  30:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  34:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  38:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  3c:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  40:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  44:	0c 94 7a 00 	jmp	0xf4	; 0xf4 <__vector_17>
+  48:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  4c:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  50:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  54:	0c 94 89 00 	jmp	0x112	; 0x112 <__vector_21>
+  58:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  5c:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  60:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  64:	0c 94 4d 00 	jmp	0x9a	; 0x9a <__bad_interrupt>
+  68:	c7 00       	.word	0x00c7	; ????
+  6a:	ce 00       	.word	0x00ce	; ????
+  6c:	d5 00       	.word	0x00d5	; ????
+  6e:	df 00       	.word	0x00df	; ????
+  70:	e9 00       	.word	0x00e9	; ????
+  72:	f3 00       	.word	0x00f3	; ????
+  74:	fd 00       	.word	0x00fd	; ????
+
+00000076 <__ctors_end>:
+  76:	11 24       	eor	r1, r1
+  78:	1f be       	out	0x3f, r1	; 63
+  7a:	cf ef       	ldi	r28, 0xFF	; 255
+  7c:	d8 e0       	ldi	r29, 0x08	; 8
+  7e:	de bf       	out	0x3e, r29	; 62
+  80:	cd bf       	out	0x3d, r28	; 61
+
+00000082 <__do_clear_bss>:
+  82:	21 e0       	ldi	r18, 0x01	; 1
+  84:	a0 e0       	ldi	r26, 0x00	; 0
+  86:	b1 e0       	ldi	r27, 0x01	; 1
+  88:	01 c0       	rjmp	.+2      	; 0x8c <.do_clear_bss_start>
+
+0000008a <.do_clear_bss_loop>:
+  8a:	1d 92       	st	X+, r1
+
+0000008c <.do_clear_bss_start>:
+  8c:	a2 30       	cpi	r26, 0x02	; 2
+  8e:	b2 07       	cpc	r27, r18
+  90:	e1 f7       	brne	.-8      	; 0x8a <.do_clear_bss_loop>
+  92:	0e 94 68 00 	call	0xd0	; 0xd0 <main>
+  96:	0c 94 1a 01 	jmp	0x234	; 0x234 <_exit>
+
+0000009a <__bad_interrupt>:
+  9a:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000009e <init_ADC>:
+
+//NON-Interrupt subroutines
+
+void init_ADC()
+{
+	ADMUX = 0;																		// LIMPIAR REGISTRO
+  9e:	ec e7       	ldi	r30, 0x7C	; 124
+  a0:	f0 e0       	ldi	r31, 0x00	; 0
+  a2:	10 82       	st	Z, r1
+	ADMUX |= (1 << REFS0);															// utilizar AVcc como referencia (5v)
+  a4:	80 81       	ld	r24, Z
+  a6:	80 64       	ori	r24, 0x40	; 64
+  a8:	80 83       	st	Z, r24
+	ADMUX |= (1 << ADLAR);															// justificado a la izquierda (y leo 8 bits mas significativos)
+  aa:	80 81       	ld	r24, Z
+  ac:	80 62       	ori	r24, 0x20	; 32
+  ae:	80 83       	st	Z, r24
+	ADMUX |= (1 << MUX0);															// utilizar PC1 para potenciometro
+  b0:	80 81       	ld	r24, Z
+  b2:	81 60       	ori	r24, 0x01	; 1
+  b4:	80 83       	st	Z, r24
+	
+	ADCSRA = 0;																		// LIMPIAR REGISTRO
+  b6:	ea e7       	ldi	r30, 0x7A	; 122
+  b8:	f0 e0       	ldi	r31, 0x00	; 0
+  ba:	10 82       	st	Z, r1
+	ADCSRA |= (1 << ADEN);															// Activar ADC
+  bc:	80 81       	ld	r24, Z
+  be:	80 68       	ori	r24, 0x80	; 128
+  c0:	80 83       	st	Z, r24
+	ADCSRA |= (1 << ADIE);															// Activar interrupcion del ADC
+  c2:	80 81       	ld	r24, Z
+  c4:	88 60       	ori	r24, 0x08	; 8
+  c6:	80 83       	st	Z, r24
+	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);							// prescaler 128
+  c8:	80 81       	ld	r24, Z
+  ca:	87 60       	ori	r24, 0x07	; 7
+  cc:	80 83       	st	Z, r24
+  ce:	08 95       	ret
+
+000000d0 <main>:
+
+//Main
+
+int main(void)
+{
+    cli();
+  d0:	f8 94       	cli
+	spiInit(SPI_SLAVE_SS, SPI_DATA_ORDER_MSB, SPI_CLOCK_IDLE_HIGH, SPI_CLOCK_FIRST_EDGE);
+  d2:	20 e0       	ldi	r18, 0x00	; 0
+  d4:	48 e0       	ldi	r20, 0x08	; 8
+  d6:	60 e0       	ldi	r22, 0x00	; 0
+  d8:	80 e4       	ldi	r24, 0x40	; 64
+  da:	0e 94 af 00 	call	0x15e	; 0x15e <spiInit>
+	init_ADC();
+  de:	0e 94 4f 00 	call	0x9e	; 0x9e <init_ADC>
+	init_PWM1(19999);
+  e2:	8f e1       	ldi	r24, 0x1F	; 31
+  e4:	9e e4       	ldi	r25, 0x4E	; 78
+  e6:	0e 94 99 00 	call	0x132	; 0x132 <init_PWM1>
+	SPCR |= (1 << SPIE);
+  ea:	8c b5       	in	r24, 0x2c	; 44
+  ec:	80 68       	ori	r24, 0x80	; 128
+  ee:	8c bd       	out	0x2c, r24	; 44
+	sei();
+  f0:	78 94       	sei
+  f2:	ff cf       	rjmp	.-2      	; 0xf2 <main+0x22>
+
+000000f4 <__vector_17>:
+//NON-Interrupt subroutines
+
+//Interrupt routines
+
+ISR(SPI_STC_vect)
+{
+  f4:	1f 92       	push	r1
+  f6:	0f 92       	push	r0
+  f8:	0f b6       	in	r0, 0x3f	; 63
+  fa:	0f 92       	push	r0
+  fc:	11 24       	eor	r1, r1
+  fe:	8f 93       	push	r24
+	data = SPDR;
+ 100:	8e b5       	in	r24, 0x2e	; 46
+ 102:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <data>
+}
+ 106:	8f 91       	pop	r24
+ 108:	0f 90       	pop	r0
+ 10a:	0f be       	out	0x3f, r0	; 63
+ 10c:	0f 90       	pop	r0
+ 10e:	1f 90       	pop	r1
+ 110:	18 95       	reti
+
+00000112 <__vector_21>:
+
+ISR(ADC_vect)
+{
+ 112:	1f 92       	push	r1
+ 114:	0f 92       	push	r0
+ 116:	0f b6       	in	r0, 0x3f	; 63
+ 118:	0f 92       	push	r0
+ 11a:	11 24       	eor	r1, r1
+ 11c:	8f 93       	push	r24
+	adc_value =  ADCH;
+ 11e:	80 91 79 00 	lds	r24, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7f8079>
+ 122:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 126:	8f 91       	pop	r24
+ 128:	0f 90       	pop	r0
+ 12a:	0f be       	out	0x3f, r0	; 63
+ 12c:	0f 90       	pop	r0
+ 12e:	1f 90       	pop	r1
+ 130:	18 95       	reti
+
+00000132 <init_PWM1>:
+// Librerias
+#include "pwm1.h"
+
+// NON-Interrupt subroutines
+// El PWM sirve para el servomotor, este genera una señal que hace que se mueva
+void init_PWM1(uint16_t TOP){
+ 132:	9c 01       	movw	r18, r24
+	DDRB |= (1 << PORTB1) | (1 << PORTB2);										// Salida para servo1 (PB1) Y servo 2 (PB2)
+ 134:	94 b1       	in	r25, 0x04	; 4
+ 136:	96 60       	ori	r25, 0x06	; 6
+ 138:	94 b9       	out	0x04, r25	; 4
+	TCCR1A = 0;																	// LIMPIAR TCCRA
+ 13a:	e0 e8       	ldi	r30, 0x80	; 128
+ 13c:	f0 e0       	ldi	r31, 0x00	; 0
+ 13e:	10 82       	st	Z, r1
+	TCCR1A = (1 << COM1A1) | (1 << COM1B1) | (1 << WGM11);						// Polaridad no invertido (OC1A para servo1 y OC1B para servo2) y fast pwm (parte baja)
+ 140:	82 ea       	ldi	r24, 0xA2	; 162
+ 142:	80 83       	st	Z, r24
+	TCCR1B = 0;																	// LIMPIAR TCCRB
+ 144:	e1 e8       	ldi	r30, 0x81	; 129
+ 146:	f0 e0       	ldi	r31, 0x00	; 0
+ 148:	10 82       	st	Z, r1
+	TCCR1B = (1 << WGM13) | (1 << WGM12);										// MODO FAST PWM (parte alta)
+ 14a:	88 e1       	ldi	r24, 0x18	; 24
+ 14c:	80 83       	st	Z, r24
+	TCCR1B |= (1 << CS11);														// PRESCALER PWM 8
+ 14e:	90 81       	ld	r25, Z
+ 150:	92 60       	ori	r25, 0x02	; 2
+ 152:	90 83       	st	Z, r25
+	//TCCR1B |= (1 << ICNC1);														// noise canceler
+	ICR1 = TOP;																	// valor maximo para ICR1 "19999"
+ 154:	30 93 87 00 	sts	0x0087, r19	; 0x800087 <__TEXT_REGION_LENGTH__+0x7f8087>
+ 158:	20 93 86 00 	sts	0x0086, r18	; 0x800086 <__TEXT_REGION_LENGTH__+0x7f8086>
+ 15c:	08 95       	ret
+
+0000015e <spiInit>:
+#include "SPI.h"
+
+//NON-Interrupt subroutines
+
+void spiInit(Spi_Type sType, Spi_Data_Order sDataOrder, Spi_Clock_Polarity sClockPolarity, Spi_Clock_Phase sClockPhase)
+{
+ 15e:	e8 2f       	mov	r30, r24
+	//Cableado en fisico es PB2 es SS, PB3 es MOSI, PB4 es MISO, PB5 es SCK
+	
+	if (sType & (1 << MSTR))			// Si estamos en modo maestro
+ 160:	84 ff       	sbrs	r24, 4
+ 162:	52 c0       	rjmp	.+164    	; 0x208 <spiInit+0xaa>
+	{
+		DDRB |= (1 << PORTB3) | (1 << PORTB5) | (1 << PORTB2);			//MOSI, SCK, NEGADO_SS
+ 164:	84 b1       	in	r24, 0x04	; 4
+ 166:	8c 62       	ori	r24, 0x2C	; 44
+ 168:	84 b9       	out	0x04, r24	; 4
+		DDRB &= ~(1 << PORTB4);											//MISO entrada
+ 16a:	84 b1       	in	r24, 0x04	; 4
+ 16c:	8f 7e       	andi	r24, 0xEF	; 239
+ 16e:	84 b9       	out	0x04, r24	; 4
+		SPCR |= (1 << MSTR);
+ 170:	8c b5       	in	r24, 0x2c	; 44
+ 172:	80 61       	ori	r24, 0x10	; 16
+ 174:	8c bd       	out	0x2c, r24	; 44
+		
+		uint8_t temp = sType & 0b00000111;
+ 176:	e7 70       	andi	r30, 0x07	; 7
+		switch(temp)
+ 178:	8e 2f       	mov	r24, r30
+ 17a:	90 e0       	ldi	r25, 0x00	; 0
+ 17c:	87 30       	cpi	r24, 0x07	; 7
+ 17e:	91 05       	cpc	r25, r1
+ 180:	08 f0       	brcs	.+2      	; 0x184 <spiInit+0x26>
+ 182:	4b c0       	rjmp	.+150    	; 0x21a <spiInit+0xbc>
+ 184:	fc 01       	movw	r30, r24
+ 186:	ec 5c       	subi	r30, 0xCC	; 204
+ 188:	ff 4f       	sbci	r31, 0xFF	; 255
+ 18a:	0c 94 14 01 	jmp	0x228	; 0x228 <__tablejump2__>
+		{
+			case 0:														//DIV2
+				SPCR &= ~((1 << SPR1) | (1 << SPR0));
+ 18e:	8c b5       	in	r24, 0x2c	; 44
+ 190:	8c 7f       	andi	r24, 0xFC	; 252
+ 192:	8c bd       	out	0x2c, r24	; 44
+				SPSR |= (1 << SPI2X);
+ 194:	8d b5       	in	r24, 0x2d	; 45
+ 196:	81 60       	ori	r24, 0x01	; 1
+ 198:	8d bd       	out	0x2d, r24	; 45
+				break;
+ 19a:	3f c0       	rjmp	.+126    	; 0x21a <spiInit+0xbc>
+			case 1:														//DIV4
+				SPCR &= ~((1 << SPR1) | (1 << SPR0));
+ 19c:	8c b5       	in	r24, 0x2c	; 44
+ 19e:	8c 7f       	andi	r24, 0xFC	; 252
+ 1a0:	8c bd       	out	0x2c, r24	; 44
+				SPSR &= ~(1 << SPI2X);
+ 1a2:	8d b5       	in	r24, 0x2d	; 45
+ 1a4:	8e 7f       	andi	r24, 0xFE	; 254
+ 1a6:	8d bd       	out	0x2d, r24	; 45
+				break;
+ 1a8:	38 c0       	rjmp	.+112    	; 0x21a <spiInit+0xbc>
+			case 2:														//DIV8
+				SPCR |= (1 << SPR0);
+ 1aa:	8c b5       	in	r24, 0x2c	; 44
+ 1ac:	81 60       	ori	r24, 0x01	; 1
+ 1ae:	8c bd       	out	0x2c, r24	; 44
+				SPCR &= ~(1 << SPR1);
+ 1b0:	8c b5       	in	r24, 0x2c	; 44
+ 1b2:	8d 7f       	andi	r24, 0xFD	; 253
+ 1b4:	8c bd       	out	0x2c, r24	; 44
+				SPSR |= (1 << SPI2X);
+ 1b6:	8d b5       	in	r24, 0x2d	; 45
+ 1b8:	81 60       	ori	r24, 0x01	; 1
+ 1ba:	8d bd       	out	0x2d, r24	; 45
+				break;
+ 1bc:	2e c0       	rjmp	.+92     	; 0x21a <spiInit+0xbc>
+			case 3:														//DIV16
+				SPCR |= (1 << SPR0);
+ 1be:	8c b5       	in	r24, 0x2c	; 44
+ 1c0:	81 60       	ori	r24, 0x01	; 1
+ 1c2:	8c bd       	out	0x2c, r24	; 44
+				SPCR &= ~(1 << SPR1);
+ 1c4:	8c b5       	in	r24, 0x2c	; 44
+ 1c6:	8d 7f       	andi	r24, 0xFD	; 253
+ 1c8:	8c bd       	out	0x2c, r24	; 44
+				SPSR &= ~(1 << SPI2X);
+ 1ca:	8d b5       	in	r24, 0x2d	; 45
+ 1cc:	8e 7f       	andi	r24, 0xFE	; 254
+ 1ce:	8d bd       	out	0x2d, r24	; 45
+				break;
+ 1d0:	24 c0       	rjmp	.+72     	; 0x21a <spiInit+0xbc>
+			case 4:														//DIV32
+				SPCR &= ~(1 << SPR0);
+ 1d2:	8c b5       	in	r24, 0x2c	; 44
+ 1d4:	8e 7f       	andi	r24, 0xFE	; 254
+ 1d6:	8c bd       	out	0x2c, r24	; 44
+				SPCR |= (1 << SPR1);
+ 1d8:	8c b5       	in	r24, 0x2c	; 44
+ 1da:	82 60       	ori	r24, 0x02	; 2
+ 1dc:	8c bd       	out	0x2c, r24	; 44
+				SPSR |= (1 << SPI2X);
+ 1de:	8d b5       	in	r24, 0x2d	; 45
+ 1e0:	81 60       	ori	r24, 0x01	; 1
+ 1e2:	8d bd       	out	0x2d, r24	; 45
+				break;
+ 1e4:	1a c0       	rjmp	.+52     	; 0x21a <spiInit+0xbc>
+			case 5:														//DIV64
+				SPCR &= ~(1 << SPR0);
+ 1e6:	8c b5       	in	r24, 0x2c	; 44
+ 1e8:	8e 7f       	andi	r24, 0xFE	; 254
+ 1ea:	8c bd       	out	0x2c, r24	; 44
+				SPCR |= (1 << SPR1);
+ 1ec:	8c b5       	in	r24, 0x2c	; 44
+ 1ee:	82 60       	ori	r24, 0x02	; 2
+ 1f0:	8c bd       	out	0x2c, r24	; 44
+				SPSR &= ~(1 << SPI2X);
+ 1f2:	8d b5       	in	r24, 0x2d	; 45
+ 1f4:	8e 7f       	andi	r24, 0xFE	; 254
+ 1f6:	8d bd       	out	0x2d, r24	; 45
+				break;
+ 1f8:	10 c0       	rjmp	.+32     	; 0x21a <spiInit+0xbc>
+			case 6:														//DIV128
+				SPCR |= (1 << SPR0) | (1 << SPR1);
+ 1fa:	8c b5       	in	r24, 0x2c	; 44
+ 1fc:	83 60       	ori	r24, 0x03	; 3
+ 1fe:	8c bd       	out	0x2c, r24	; 44
+				SPSR &= ~(1 << SPI2X);
+ 200:	8d b5       	in	r24, 0x2d	; 45
+ 202:	8e 7f       	andi	r24, 0xFE	; 254
+ 204:	8d bd       	out	0x2d, r24	; 45
+				break;
+ 206:	09 c0       	rjmp	.+18     	; 0x21a <spiInit+0xbc>
+				
+		}
+	}
+	else
+	{
+		DDRB |=(1 << PORTB4);													//MISO
+ 208:	84 b1       	in	r24, 0x04	; 4
+ 20a:	80 61       	ori	r24, 0x10	; 16
+ 20c:	84 b9       	out	0x04, r24	; 4
+		DDRB &= ~((1 << PORTB3) | (1 << PORTB5) | (1 << PORTB2));				//MOSI, SCK, SS
+ 20e:	84 b1       	in	r24, 0x04	; 4
+ 210:	83 7d       	andi	r24, 0xD3	; 211
+ 212:	84 b9       	out	0x04, r24	; 4
+		SPCR &= ~(1 << MSTR);													//modo esclavo
+ 214:	8c b5       	in	r24, 0x2c	; 44
+ 216:	8f 7e       	andi	r24, 0xEF	; 239
+ 218:	8c bd       	out	0x2c, r24	; 44
+	}
+	
+	SPCR |= (1 << SPE) | sDataOrder | sClockPolarity | sClockPhase;				//para ambas opciones se habilita el SPE y los otros parametros
+ 21a:	8c b5       	in	r24, 0x2c	; 44
+ 21c:	46 2b       	or	r20, r22
+ 21e:	24 2b       	or	r18, r20
+ 220:	28 2b       	or	r18, r24
+ 222:	20 64       	ori	r18, 0x40	; 64
+ 224:	2c bd       	out	0x2c, r18	; 44
+ 226:	08 95       	ret
+
+00000228 <__tablejump2__>:
+ 228:	ee 0f       	add	r30, r30
+ 22a:	ff 1f       	adc	r31, r31
+ 22c:	05 90       	lpm	r0, Z+
+ 22e:	f4 91       	lpm	r31, Z
+ 230:	e0 2d       	mov	r30, r0
+ 232:	09 94       	ijmp
+
+00000234 <_exit>:
+ 234:	f8 94       	cli
+
+00000236 <__stop_program>:
+ 236:	ff cf       	rjmp	.-2      	; 0x236 <__stop_program>
