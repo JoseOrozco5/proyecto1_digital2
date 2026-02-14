@@ -15,7 +15,7 @@ void init_UART()
 	
 	UCSR0A = 0;																		// Configurar UCSR0A
 	
-	UCSR0B |=  (1 << TXEN0) | (1 << RXEN0 ) | (1 << RXCIE0);						// habilitar bit para recibir, transmitir y habilitar interrupción
+	//UCSR0B |=  (1 << TXEN0) | (1 << RXEN0 ) | (1 << RXCIE0);						// habilitar bit para recibir, transmitir y habilitar interrupción
 	UCSR0C |= (1 << UCSZ01) | (1 << UCSZ00);										// CHARACTER SIZE 8 BITS Y 1 STOP BIT
 	UBRR0 = 103;																		// BAUD RATE 9600 0.2% DE ERROR
 }

@@ -9,7 +9,7 @@
 
 //NON-Interrupt subroutines
 
-void init_ADC()
+void init_ADC(void)
 {
 	ADMUX = 0;																		// LIMPIAR REGISTRO
 	ADMUX |= (1 << REFS0);															// utilizar AVcc como referencia (5v)

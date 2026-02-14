@@ -4,11 +4,11 @@
 
 ADC\ADC.c
 
+I2C\I2C.c
+
 LCD\LCD.c
 
 main.c
-
-SPI\SPI.c
 
 UART\UART.c
 

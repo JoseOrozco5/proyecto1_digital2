@@ -11,9 +11,11 @@
 void init_LCD8bits(void){
 	
 	DDRD |= (1 << PORTD2) | (1 << PORTD3) | (1 << PORTD4) | (1 << PORTD5) | (1 << PORTD6) | (1 << PORTD7);			//PD0-PD5 LCD
-	DDRB |=	(1 << PORTB0) | (1 << PORTB1) | (1 << PORTB2) | (1 << PORTB3);											// PB0 y PB1 son PD6 y PD7, PB2 es E y PB3 es RS
+	DDRB |=	(1 << PORTB0) | (1 << PORTB1);											// PB0 y PB1 son PD6 y PD7
+	DDRC |= (1 << PORTC0) | (1 << PORTC1);											// PC0 es E y PC1 es RS
 	PORTD &= ~((1 << PORTD2) | (1 << PORTD3) | (1 << PORTD4) | (1 << PORTD5) | (1 << PORTD6) | (1 << PORTD7));
-	PORTB &= ~((1 << PORTB2) | (1 << PORTB3));
+	PORTB &= ~((1 << PORTB0) | (1 << PORTB1));
+	PORTC &= ~((1 << PORTC0) | (1 << PORTC1));
 	
 	LCD_Port(0x00);
 	_delay_ms(20);
@@ -39,11 +41,11 @@ void init_LCD8bits(void){
 }
 
 void LCD_CMD(char r){
-	PORTB &= ~(1 << PORTB3);									// PONER RS EN 0
+	PORTC &= ~(1 << PORTC1);									// PONER RS EN 0
 	LCD_Port(r);												//poner comando en puerto
-	PORTB |= (1 << PORTB2);										//poner enable en 1
+	PORTC |= (1 << PORTC0);										//poner enable en 1
 	_delay_ms(5);												// tiempo de espera para borrar el visualizador
-	PORTB &= ~(1 << PORTB2);									// poner en 0 enable
+	PORTC &= ~(1 << PORTC0);									// poner en 0 enable
 }
 
 //mandar byte al puerto D
@@ -123,11 +125,11 @@ void LCD_Port(uint8_t p){
 
 //escribir un caracter
 void LCD_Write_Char(char c){
-	PORTB |= (1 << PORTB3);										// PONER RS EN 1
+	PORTC |= (1 << PORTC1);										// PONER RS EN 1
 	LCD_Port(c);												//colocar byte en puerto de datos
-	PORTB |= (1 << PORTB2);										//PONER E EN 1
+	PORTC |= (1 << PORTC0);										//PONER E EN 1
 	_delay_ms(5);
-	PORTB &= ~(1 << PORTB2);									//PONER E EN 0
+	PORTC &= ~(1 << PORTC0);									//PONER E EN 0
 }
 
 void LCD_Write_String(char *s){

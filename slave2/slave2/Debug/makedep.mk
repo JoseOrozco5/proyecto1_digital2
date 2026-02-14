@@ -4,9 +4,9 @@
 
 ADC\ADC.c
 
+I2C\I2C.c
+
 main.c
 
 PWM1\pwm1.c
-
-SPI\SPI.c
 

@@ -11,7 +11,7 @@
 
 #include <avr/io.h>
 
-void init_ADC();
+void init_ADC(void);
 
 
 
