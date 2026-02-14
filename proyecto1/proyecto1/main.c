@@ -75,8 +75,6 @@ int main(void)
 		snprintf(buffer1, sizeof(buffer1), "%3u ", bufferI2C_1);
 		LCD_Write_String(buffer1);
 		I2C_MASTER_STOP();
-		_delay_ms(1000);
-		/*
 		//----------------------------SLAVE 2----------------------------//
 		if (!I2C_MASTER_START()) return;									//No avanzar hasta realizar correctamente el start
 		if (!I2C_MASTER_WRITE(slave2W))										//Esperar a que slave responda si esta escuchando
@@ -85,7 +83,7 @@ int main(void)
 			return;
 		}
 		//Comando para leer datos de slave
-		I2C_MASTER_WRITE('D');
+		I2C_MASTER_WRITE('T');
 		if (!I2C_MASTER_R_START())											//Empezar a leer
 		{
 			I2C_MASTER_STOP();
@@ -103,8 +101,7 @@ int main(void)
 		snprintf(buffer2, sizeof(buffer2), "%3u ", bufferI2C_2);
 		LCD_Write_String(buffer2);
 		I2C_MASTER_STOP();
-		_delay_ms(300);
-		*/
+		
 	}
 }
 ////////////////////// Non-interrupt function ///////////////////////////

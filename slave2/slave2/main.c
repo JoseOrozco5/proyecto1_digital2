@@ -25,6 +25,7 @@ volatile uint8_t adc_value;
 
 int main(void)
 {
+	cli();
 	DDRC |=(1 << DDC3);
 	DDRC &= ~(1 << DDC1);								//pot
 	DDRB |= (1 << DDB5);
@@ -35,14 +36,13 @@ int main(void)
 	sei();
     while (1) 
     {
-		if (buffer == 'D')
+		if (buffer == 'T')
 		{
 			PORTC |= (1 << PORTC3);
 			buffer = 0;
 		}
 		//Secuencia ADC
 		ADCSRA |= (1 << ADSC);
-		_delay_ms(1000);
     }
 }
 
@@ -60,7 +60,7 @@ ISR(ADC_vect)
 ISR(TWI_vect)
 {
 	PORTB ^= (1 << PORTB5);
-	uint8_t state = TWSR & 0xFC;						//Extraer 5 bits del estado
+	uint8_t state = TWSR & 0xF8;						//Extraer 5 bits del estado
 	switch (state)
 	{
 		// ---> Slave
@@ -77,13 +77,13 @@ ISR(TWI_vect)
 		case 0xA8: //SLA+R
 		case 0xB8: //Dato enviado, ACK --> Slave
 			//PORTC |= (1 << PORTC3);
-			TWDR = adc_value; //Enviar valor del sensor
+			TWDR = 0x32; //Enviar valor del sensor
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		case 0xC0: //Dato transmitido, ACK --> slave
 		case 0xC8: //Ultimo dato transmitido
 			TWCR = 0;
-			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
+			TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWEA); //(1 << TWINT)
 			break;
 		case 0xA0: //STOP | R_START recibido
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);

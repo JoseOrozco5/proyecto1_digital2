@@ -3,31 +3,31 @@ slave2.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  000002b2  2**0
+  0 .data         00000000  00800100  00800100  0000025e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         0000023e  00000000  00000000  00000074  2**1
+  1 .text         000001ea  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000002  00800100  00800100  000002b2  2**0
+  2 .bss          00000002  00800100  00800100  0000025e  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000002b2  2**0
+  3 .comment      00000030  00000000  00000000  0000025e  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002e4  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000290  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000000d0  00000000  00000000  00000324  2**0
+  5 .debug_aranges 000000b0  00000000  00000000  000002d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000ae9  00000000  00000000  000003f4  2**0
+  6 .debug_info   000009ca  00000000  00000000  00000380  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000906  00000000  00000000  00000edd  2**0
+  7 .debug_abbrev 00000839  00000000  00000000  00000d4a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000772  00000000  00000000  000017e3  2**0
+  8 .debug_line   00000619  00000000  00000000  00001583  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  0000016c  00000000  00000000  00001f58  2**2
+  9 .debug_frame  00000148  00000000  00000000  00001b9c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000004e0  00000000  00000000  000020c4  2**0
+ 10 .debug_str    0000047f  00000000  00000000  00001ce4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000025e  00000000  00000000  000025a4  2**0
+ 11 .debug_loc    0000025e  00000000  00000000  00002163  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000090  00000000  00000000  00002802  2**0
+ 12 .debug_ranges 00000080  00000000  00000000  000023c1  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -54,10 +54,10 @@ Disassembly of section .text:
   48:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
   4c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
   50:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
-  54:	0c 94 99 00 	jmp	0x132	; 0x132 <__vector_21>
+  54:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__vector_21>
   58:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
   5c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
-  60:	0c 94 b2 00 	jmp	0x164	; 0x164 <__vector_24>
+  60:	0c 94 89 00 	jmp	0x112	; 0x112 <__vector_24>
   64:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
 
 00000068 <__ctors_end>:
@@ -81,330 +81,265 @@ Disassembly of section .text:
   7e:	a2 30       	cpi	r26, 0x02	; 2
   80:	b2 07       	cpc	r27, r18
   82:	e1 f7       	brne	.-8      	; 0x7c <.do_clear_bss_loop>
-  84:	0e 94 6b 00 	call	0xd6	; 0xd6 <main>
-  88:	0c 94 1d 01 	jmp	0x23a	; 0x23a <_exit>
+  84:	0e 94 52 00 	call	0xa4	; 0xa4 <main>
+  88:	0c 94 f3 00 	jmp	0x1e6	; 0x1e6 <_exit>
 
 0000008c <__bad_interrupt>:
   8c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-00000090 <init_ADC>:
-
-//NON-Interrupt subroutines
-
-void init_ADC(void)
-{
-	ADMUX = 0;																		// LIMPIAR REGISTRO
-  90:	ec e7       	ldi	r30, 0x7C	; 124
-  92:	f0 e0       	ldi	r31, 0x00	; 0
-  94:	10 82       	st	Z, r1
-	ADMUX |= (1 << REFS0);															// utilizar AVcc como referencia (5v)
-  96:	80 81       	ld	r24, Z
-  98:	80 64       	ori	r24, 0x40	; 64
-  9a:	80 83       	st	Z, r24
-	ADMUX |= (1 << ADLAR);															// justificado a la izquierda (y leo 8 bits mas significativos)
-  9c:	80 81       	ld	r24, Z
-  9e:	80 62       	ori	r24, 0x20	; 32
-  a0:	80 83       	st	Z, r24
-	ADMUX |= (1 << MUX0);															// utilizar PC1 para potenciometro
-  a2:	80 81       	ld	r24, Z
-  a4:	81 60       	ori	r24, 0x01	; 1
-  a6:	80 83       	st	Z, r24
-	
-	ADCSRA = 0;																		// LIMPIAR REGISTRO
-  a8:	ea e7       	ldi	r30, 0x7A	; 122
-  aa:	f0 e0       	ldi	r31, 0x00	; 0
-  ac:	10 82       	st	Z, r1
-	ADCSRA |= (1 << ADEN);															// Activar ADC
-  ae:	80 81       	ld	r24, Z
-  b0:	80 68       	ori	r24, 0x80	; 128
-  b2:	80 83       	st	Z, r24
-	ADCSRA |= (1 << ADIE);															// Activar interrupcion del ADC
-  b4:	80 81       	ld	r24, Z
-  b6:	88 60       	ori	r24, 0x08	; 8
-  b8:	80 83       	st	Z, r24
-	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);							// prescaler 128
-  ba:	80 81       	ld	r24, Z
-  bc:	87 60       	ori	r24, 0x07	; 7
-  be:	80 83       	st	Z, r24
-  c0:	08 95       	ret
-
-000000c2 <I2C_SLAVE_INIT>:
+00000090 <I2C_SLAVE_INIT>:
 	return 1;
 }
 //Inicializar dispositivo slave
 void I2C_SLAVE_INIT(uint8_t address)
 {
 	DDRC &= ~((1 << DDC4) | (1 << DDC5)); //Entradas de inicio
-  c2:	97 b1       	in	r25, 0x07	; 7
-  c4:	9f 7c       	andi	r25, 0xCF	; 207
-  c6:	97 b9       	out	0x07, r25	; 7
+  90:	97 b1       	in	r25, 0x07	; 7
+  92:	9f 7c       	andi	r25, 0xCF	; 207
+  94:	97 b9       	out	0x07, r25	; 7
 	TWAR = address << 1; //Activar direccion
-  c8:	88 0f       	add	r24, r24
-  ca:	80 93 ba 00 	sts	0x00BA, r24	; 0x8000ba <__TEXT_REGION_LENGTH__+0x7f80ba>
+  96:	88 0f       	add	r24, r24
+  98:	80 93 ba 00 	sts	0x00BA, r24	; 0x8000ba <__TEXT_REGION_LENGTH__+0x7f80ba>
 	TWCR = (1 << TWEA) | (1 << TWEN) | (1 << TWIE);
-  ce:	85 e4       	ldi	r24, 0x45	; 69
-  d0:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
-  d4:	08 95       	ret
+  9c:	85 e4       	ldi	r24, 0x45	; 69
+  9e:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
+  a2:	08 95       	ret
 
-000000d6 <main>:
+000000a4 <main>:
 
 //Main
 
 int main(void)
 {
 	DDRC |=(1 << DDC3);
-  d6:	87 b1       	in	r24, 0x07	; 7
-  d8:	88 60       	ori	r24, 0x08	; 8
-  da:	87 b9       	out	0x07, r24	; 7
+  a4:	87 b1       	in	r24, 0x07	; 7
+  a6:	88 60       	ori	r24, 0x08	; 8
+  a8:	87 b9       	out	0x07, r24	; 7
 	DDRC &= ~(1 << DDC1);								//pot
-  dc:	87 b1       	in	r24, 0x07	; 7
-  de:	8d 7f       	andi	r24, 0xFD	; 253
-  e0:	87 b9       	out	0x07, r24	; 7
+  aa:	87 b1       	in	r24, 0x07	; 7
+  ac:	8d 7f       	andi	r24, 0xFD	; 253
+  ae:	87 b9       	out	0x07, r24	; 7
 	DDRB |= (1 << DDB5);
-  e2:	84 b1       	in	r24, 0x04	; 4
-  e4:	80 62       	ori	r24, 0x20	; 32
-  e6:	84 b9       	out	0x04, r24	; 4
+  b0:	84 b1       	in	r24, 0x04	; 4
+  b2:	80 62       	ori	r24, 0x20	; 32
+  b4:	84 b9       	out	0x04, r24	; 4
 	PORTC &= ~(1 << PORTC3);								//LED toggle
-  e8:	88 b1       	in	r24, 0x08	; 8
-  ea:	87 7f       	andi	r24, 0xF7	; 247
-  ec:	88 b9       	out	0x08, r24	; 8
-	init_ADC();
-  ee:	0e 94 48 00 	call	0x90	; 0x90 <init_ADC>
+  b6:	88 b1       	in	r24, 0x08	; 8
+  b8:	87 7f       	andi	r24, 0xF7	; 247
+  ba:	88 b9       	out	0x08, r24	; 8
+	//init_ADC();
 	init_PWM1(19999);
-  f2:	8f e1       	ldi	r24, 0x1F	; 31
-  f4:	9e e4       	ldi	r25, 0x4E	; 78
-  f6:	0e 94 07 01 	call	0x20e	; 0x20e <init_PWM1>
+  bc:	8f e1       	ldi	r24, 0x1F	; 31
+  be:	9e e4       	ldi	r25, 0x4E	; 78
+  c0:	0e 94 dd 00 	call	0x1ba	; 0x1ba <init_PWM1>
 	I2C_SLAVE_INIT(SlaveAdress);
-  fa:	80 e5       	ldi	r24, 0x50	; 80
-  fc:	0e 94 61 00 	call	0xc2	; 0xc2 <I2C_SLAVE_INIT>
+  c4:	80 e5       	ldi	r24, 0x50	; 80
+  c6:	0e 94 48 00 	call	0x90	; 0x90 <I2C_SLAVE_INIT>
 	sei();
- 100:	78 94       	sei
+  ca:	78 94       	sei
     while (1) 
     {
-		if (buffer == 'D')
- 102:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <buffer>
- 106:	84 34       	cpi	r24, 0x44	; 68
- 108:	29 f4       	brne	.+10     	; 0x114 <main+0x3e>
+		if (buffer == 'T')
+  cc:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <buffer>
+  d0:	84 35       	cpi	r24, 0x54	; 84
+  d2:	e1 f7       	brne	.-8      	; 0xcc <main+0x28>
 		{
 			PORTC |= (1 << PORTC3);
- 10a:	88 b1       	in	r24, 0x08	; 8
- 10c:	88 60       	ori	r24, 0x08	; 8
- 10e:	88 b9       	out	0x08, r24	; 8
+  d4:	88 b1       	in	r24, 0x08	; 8
+  d6:	88 60       	ori	r24, 0x08	; 8
+  d8:	88 b9       	out	0x08, r24	; 8
 			buffer = 0;
- 110:	10 92 01 01 	sts	0x0101, r1	; 0x800101 <buffer>
-		}
-		//Secuencia ADC
-		ADCSRA |= (1 << ADSC);
- 114:	ea e7       	ldi	r30, 0x7A	; 122
- 116:	f0 e0       	ldi	r31, 0x00	; 0
- 118:	80 81       	ld	r24, Z
- 11a:	80 64       	ori	r24, 0x40	; 64
- 11c:	80 83       	st	Z, r24
-	#else
-		//round up by default
-		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
-	#endif
+  da:	10 92 01 01 	sts	0x0101, r1	; 0x800101 <buffer>
+  de:	f6 cf       	rjmp	.-20     	; 0xcc <main+0x28>
 
-	__builtin_avr_delay_cycles(__ticks_dc);
- 11e:	2f ef       	ldi	r18, 0xFF	; 255
- 120:	83 ed       	ldi	r24, 0xD3	; 211
- 122:	90 e3       	ldi	r25, 0x30	; 48
- 124:	21 50       	subi	r18, 0x01	; 1
- 126:	80 40       	sbci	r24, 0x00	; 0
- 128:	90 40       	sbci	r25, 0x00	; 0
- 12a:	e1 f7       	brne	.-8      	; 0x124 <main+0x4e>
- 12c:	00 c0       	rjmp	.+0      	; 0x12e <main+0x58>
- 12e:	00 00       	nop
- 130:	e8 cf       	rjmp	.-48     	; 0x102 <main+0x2c>
-
-00000132 <__vector_21>:
+000000e0 <__vector_21>:
 
 //Interrupt routines
 
 
 ISR(ADC_vect)
 {
- 132:	1f 92       	push	r1
- 134:	0f 92       	push	r0
- 136:	0f b6       	in	r0, 0x3f	; 63
- 138:	0f 92       	push	r0
- 13a:	11 24       	eor	r1, r1
- 13c:	8f 93       	push	r24
- 13e:	ef 93       	push	r30
- 140:	ff 93       	push	r31
+  e0:	1f 92       	push	r1
+  e2:	0f 92       	push	r0
+  e4:	0f b6       	in	r0, 0x3f	; 63
+  e6:	0f 92       	push	r0
+  e8:	11 24       	eor	r1, r1
+  ea:	8f 93       	push	r24
+  ec:	ef 93       	push	r30
+  ee:	ff 93       	push	r31
 	adc_value =  ADCH;
- 142:	80 91 79 00 	lds	r24, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7f8079>
- 146:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
+  f0:	80 91 79 00 	lds	r24, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7f8079>
+  f4:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
 	ADCSRA |= (1 << ADIF);
- 14a:	ea e7       	ldi	r30, 0x7A	; 122
- 14c:	f0 e0       	ldi	r31, 0x00	; 0
- 14e:	80 81       	ld	r24, Z
- 150:	80 61       	ori	r24, 0x10	; 16
- 152:	80 83       	st	Z, r24
+  f8:	ea e7       	ldi	r30, 0x7A	; 122
+  fa:	f0 e0       	ldi	r31, 0x00	; 0
+  fc:	80 81       	ld	r24, Z
+  fe:	80 61       	ori	r24, 0x10	; 16
+ 100:	80 83       	st	Z, r24
 }
- 154:	ff 91       	pop	r31
- 156:	ef 91       	pop	r30
- 158:	8f 91       	pop	r24
- 15a:	0f 90       	pop	r0
- 15c:	0f be       	out	0x3f, r0	; 63
- 15e:	0f 90       	pop	r0
- 160:	1f 90       	pop	r1
- 162:	18 95       	reti
+ 102:	ff 91       	pop	r31
+ 104:	ef 91       	pop	r30
+ 106:	8f 91       	pop	r24
+ 108:	0f 90       	pop	r0
+ 10a:	0f be       	out	0x3f, r0	; 63
+ 10c:	0f 90       	pop	r0
+ 10e:	1f 90       	pop	r1
+ 110:	18 95       	reti
 
-00000164 <__vector_24>:
+00000112 <__vector_24>:
 
 ISR(TWI_vect)
 {
- 164:	1f 92       	push	r1
- 166:	0f 92       	push	r0
- 168:	0f b6       	in	r0, 0x3f	; 63
- 16a:	0f 92       	push	r0
- 16c:	11 24       	eor	r1, r1
- 16e:	8f 93       	push	r24
- 170:	9f 93       	push	r25
- 172:	ef 93       	push	r30
- 174:	ff 93       	push	r31
+ 112:	1f 92       	push	r1
+ 114:	0f 92       	push	r0
+ 116:	0f b6       	in	r0, 0x3f	; 63
+ 118:	0f 92       	push	r0
+ 11a:	11 24       	eor	r1, r1
+ 11c:	8f 93       	push	r24
+ 11e:	9f 93       	push	r25
+ 120:	ef 93       	push	r30
+ 122:	ff 93       	push	r31
 	PORTB ^= (1 << PORTB5);
- 176:	95 b1       	in	r25, 0x05	; 5
- 178:	80 e2       	ldi	r24, 0x20	; 32
- 17a:	89 27       	eor	r24, r25
- 17c:	85 b9       	out	0x05, r24	; 5
-	uint8_t state = TWSR & 0xFC;						//Extraer 5 bits del estado
- 17e:	80 91 b9 00 	lds	r24, 0x00B9	; 0x8000b9 <__TEXT_REGION_LENGTH__+0x7f80b9>
- 182:	8c 7f       	andi	r24, 0xFC	; 252
+ 124:	95 b1       	in	r25, 0x05	; 5
+ 126:	80 e2       	ldi	r24, 0x20	; 32
+ 128:	89 27       	eor	r24, r25
+ 12a:	85 b9       	out	0x05, r24	; 5
+	uint8_t state = TWSR & 0xF8;						//Extraer 5 bits del estado
+ 12c:	80 91 b9 00 	lds	r24, 0x00B9	; 0x8000b9 <__TEXT_REGION_LENGTH__+0x7f80b9>
+ 130:	88 7f       	andi	r24, 0xF8	; 248
 	switch (state)
- 184:	80 3a       	cpi	r24, 0xA0	; 160
- 186:	99 f1       	breq	.+102    	; 0x1ee <__vector_24+0x8a>
- 188:	58 f4       	brcc	.+22     	; 0x1a0 <__vector_24+0x3c>
- 18a:	80 37       	cpi	r24, 0x70	; 112
- 18c:	a1 f0       	breq	.+40     	; 0x1b6 <__vector_24+0x52>
- 18e:	18 f4       	brcc	.+6      	; 0x196 <__vector_24+0x32>
- 190:	80 36       	cpi	r24, 0x60	; 96
- 192:	89 f0       	breq	.+34     	; 0x1b6 <__vector_24+0x52>
- 194:	30 c0       	rjmp	.+96     	; 0x1f6 <__vector_24+0x92>
- 196:	80 38       	cpi	r24, 0x80	; 128
- 198:	a1 f0       	breq	.+40     	; 0x1c2 <__vector_24+0x5e>
- 19a:	80 39       	cpi	r24, 0x90	; 144
- 19c:	91 f0       	breq	.+36     	; 0x1c2 <__vector_24+0x5e>
- 19e:	2b c0       	rjmp	.+86     	; 0x1f6 <__vector_24+0x92>
- 1a0:	88 3b       	cpi	r24, 0xB8	; 184
- 1a2:	b9 f0       	breq	.+46     	; 0x1d2 <__vector_24+0x6e>
- 1a4:	18 f4       	brcc	.+6      	; 0x1ac <__vector_24+0x48>
- 1a6:	88 3a       	cpi	r24, 0xA8	; 168
- 1a8:	a1 f0       	breq	.+40     	; 0x1d2 <__vector_24+0x6e>
- 1aa:	25 c0       	rjmp	.+74     	; 0x1f6 <__vector_24+0x92>
- 1ac:	80 3c       	cpi	r24, 0xC0	; 192
- 1ae:	c9 f0       	breq	.+50     	; 0x1e2 <__vector_24+0x7e>
- 1b0:	88 3c       	cpi	r24, 0xC8	; 200
- 1b2:	b9 f0       	breq	.+46     	; 0x1e2 <__vector_24+0x7e>
- 1b4:	20 c0       	rjmp	.+64     	; 0x1f6 <__vector_24+0x92>
+ 132:	80 3a       	cpi	r24, 0xA0	; 160
+ 134:	91 f1       	breq	.+100    	; 0x19a <__vector_24+0x88>
+ 136:	58 f4       	brcc	.+22     	; 0x14e <__vector_24+0x3c>
+ 138:	80 37       	cpi	r24, 0x70	; 112
+ 13a:	a1 f0       	breq	.+40     	; 0x164 <__vector_24+0x52>
+ 13c:	18 f4       	brcc	.+6      	; 0x144 <__vector_24+0x32>
+ 13e:	80 36       	cpi	r24, 0x60	; 96
+ 140:	89 f0       	breq	.+34     	; 0x164 <__vector_24+0x52>
+ 142:	2f c0       	rjmp	.+94     	; 0x1a2 <__vector_24+0x90>
+ 144:	80 38       	cpi	r24, 0x80	; 128
+ 146:	a1 f0       	breq	.+40     	; 0x170 <__vector_24+0x5e>
+ 148:	80 39       	cpi	r24, 0x90	; 144
+ 14a:	91 f0       	breq	.+36     	; 0x170 <__vector_24+0x5e>
+ 14c:	2a c0       	rjmp	.+84     	; 0x1a2 <__vector_24+0x90>
+ 14e:	88 3b       	cpi	r24, 0xB8	; 184
+ 150:	b9 f0       	breq	.+46     	; 0x180 <__vector_24+0x6e>
+ 152:	18 f4       	brcc	.+6      	; 0x15a <__vector_24+0x48>
+ 154:	88 3a       	cpi	r24, 0xA8	; 168
+ 156:	a1 f0       	breq	.+40     	; 0x180 <__vector_24+0x6e>
+ 158:	24 c0       	rjmp	.+72     	; 0x1a2 <__vector_24+0x90>
+ 15a:	80 3c       	cpi	r24, 0xC0	; 192
+ 15c:	c1 f0       	breq	.+48     	; 0x18e <__vector_24+0x7c>
+ 15e:	88 3c       	cpi	r24, 0xC8	; 200
+ 160:	b1 f0       	breq	.+44     	; 0x18e <__vector_24+0x7c>
+ 162:	1f c0       	rjmp	.+62     	; 0x1a2 <__vector_24+0x90>
 	{
 		// ---> Slave
 		case 0x60:
 		case 0x70:
 			TWCR |= (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
- 1b6:	ec eb       	ldi	r30, 0xBC	; 188
- 1b8:	f0 e0       	ldi	r31, 0x00	; 0
- 1ba:	80 81       	ld	r24, Z
- 1bc:	85 6c       	ori	r24, 0xC5	; 197
- 1be:	80 83       	st	Z, r24
+ 164:	ec eb       	ldi	r30, 0xBC	; 188
+ 166:	f0 e0       	ldi	r31, 0x00	; 0
+ 168:	80 81       	ld	r24, Z
+ 16a:	85 6c       	ori	r24, 0xC5	; 197
+ 16c:	80 83       	st	Z, r24
 			break;
- 1c0:	1d c0       	rjmp	.+58     	; 0x1fc <__vector_24+0x98>
+ 16e:	1c c0       	rjmp	.+56     	; 0x1a8 <__vector_24+0x96>
 		case 0x80:
 		case 0x90:
 			buffer = TWDR;
- 1c2:	80 91 bb 00 	lds	r24, 0x00BB	; 0x8000bb <__TEXT_REGION_LENGTH__+0x7f80bb>
- 1c6:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <buffer>
+ 170:	80 91 bb 00 	lds	r24, 0x00BB	; 0x8000bb <__TEXT_REGION_LENGTH__+0x7f80bb>
+ 174:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <buffer>
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
- 1ca:	85 ec       	ldi	r24, 0xC5	; 197
- 1cc:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
+ 178:	85 ec       	ldi	r24, 0xC5	; 197
+ 17a:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
 			break;
- 1d0:	15 c0       	rjmp	.+42     	; 0x1fc <__vector_24+0x98>
+ 17e:	14 c0       	rjmp	.+40     	; 0x1a8 <__vector_24+0x96>
 		// Enviar datos desde slave
 		case 0xA8: //SLA+R
 		case 0xB8: //Dato enviado, ACK --> Slave
 			//PORTC |= (1 << PORTC3);
-			TWDR = adc_value; //Enviar valor del sensor
- 1d2:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
- 1d6:	80 93 bb 00 	sts	0x00BB, r24	; 0x8000bb <__TEXT_REGION_LENGTH__+0x7f80bb>
+			TWDR = 0x32; //Enviar valor del sensor
+ 180:	82 e3       	ldi	r24, 0x32	; 50
+ 182:	80 93 bb 00 	sts	0x00BB, r24	; 0x8000bb <__TEXT_REGION_LENGTH__+0x7f80bb>
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
- 1da:	85 ec       	ldi	r24, 0xC5	; 197
- 1dc:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
+ 186:	85 ec       	ldi	r24, 0xC5	; 197
+ 188:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
 			break;
- 1e0:	0d c0       	rjmp	.+26     	; 0x1fc <__vector_24+0x98>
+ 18c:	0d c0       	rjmp	.+26     	; 0x1a8 <__vector_24+0x96>
 		case 0xC0: //Dato transmitido, ACK --> slave
 		case 0xC8: //Ultimo dato transmitido
 			TWCR = 0;
- 1e2:	ec eb       	ldi	r30, 0xBC	; 188
- 1e4:	f0 e0       	ldi	r31, 0x00	; 0
- 1e6:	10 82       	st	Z, r1
-			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
- 1e8:	85 ec       	ldi	r24, 0xC5	; 197
- 1ea:	80 83       	st	Z, r24
+ 18e:	ec eb       	ldi	r30, 0xBC	; 188
+ 190:	f0 e0       	ldi	r31, 0x00	; 0
+ 192:	10 82       	st	Z, r1
+			TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWEA); //(1 << TWINT)
+ 194:	85 e4       	ldi	r24, 0x45	; 69
+ 196:	80 83       	st	Z, r24
 			break;
- 1ec:	07 c0       	rjmp	.+14     	; 0x1fc <__vector_24+0x98>
+ 198:	07 c0       	rjmp	.+14     	; 0x1a8 <__vector_24+0x96>
 		case 0xA0: //STOP | R_START recibido
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
- 1ee:	85 ec       	ldi	r24, 0xC5	; 197
- 1f0:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
+ 19a:	85 ec       	ldi	r24, 0xC5	; 197
+ 19c:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
 			break;
- 1f4:	03 c0       	rjmp	.+6      	; 0x1fc <__vector_24+0x98>
+ 1a0:	03 c0       	rjmp	.+6      	; 0x1a8 <__vector_24+0x96>
 		//Errores
 		default:
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
- 1f6:	85 ec       	ldi	r24, 0xC5	; 197
- 1f8:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
+ 1a2:	85 ec       	ldi	r24, 0xC5	; 197
+ 1a4:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__TEXT_REGION_LENGTH__+0x7f80bc>
 			break;
 	}
 }
- 1fc:	ff 91       	pop	r31
- 1fe:	ef 91       	pop	r30
- 200:	9f 91       	pop	r25
- 202:	8f 91       	pop	r24
- 204:	0f 90       	pop	r0
- 206:	0f be       	out	0x3f, r0	; 63
- 208:	0f 90       	pop	r0
- 20a:	1f 90       	pop	r1
- 20c:	18 95       	reti
+ 1a8:	ff 91       	pop	r31
+ 1aa:	ef 91       	pop	r30
+ 1ac:	9f 91       	pop	r25
+ 1ae:	8f 91       	pop	r24
+ 1b0:	0f 90       	pop	r0
+ 1b2:	0f be       	out	0x3f, r0	; 63
+ 1b4:	0f 90       	pop	r0
+ 1b6:	1f 90       	pop	r1
+ 1b8:	18 95       	reti
 
-0000020e <init_PWM1>:
+000001ba <init_PWM1>:
 // Librerias
 #include "pwm1.h"
 
 // NON-Interrupt subroutines
 // El PWM sirve para el servomotor, este genera una señal que hace que se mueva
 void init_PWM1(uint16_t TOP){
- 20e:	9c 01       	movw	r18, r24
+ 1ba:	9c 01       	movw	r18, r24
 	DDRB |= (1 << PORTB1) | (1 << PORTB2);										// Salida para servo1 (PB1) Y servo 2 (PB2)
- 210:	94 b1       	in	r25, 0x04	; 4
- 212:	96 60       	ori	r25, 0x06	; 6
- 214:	94 b9       	out	0x04, r25	; 4
+ 1bc:	94 b1       	in	r25, 0x04	; 4
+ 1be:	96 60       	ori	r25, 0x06	; 6
+ 1c0:	94 b9       	out	0x04, r25	; 4
 	TCCR1A = 0;																	// LIMPIAR TCCRA
- 216:	e0 e8       	ldi	r30, 0x80	; 128
- 218:	f0 e0       	ldi	r31, 0x00	; 0
- 21a:	10 82       	st	Z, r1
+ 1c2:	e0 e8       	ldi	r30, 0x80	; 128
+ 1c4:	f0 e0       	ldi	r31, 0x00	; 0
+ 1c6:	10 82       	st	Z, r1
 	TCCR1A = (1 << COM1A1) | (1 << COM1B1) | (1 << WGM11);						// Polaridad no invertido (OC1A para servo1 y OC1B para servo2) y fast pwm (parte baja)
- 21c:	82 ea       	ldi	r24, 0xA2	; 162
- 21e:	80 83       	st	Z, r24
+ 1c8:	82 ea       	ldi	r24, 0xA2	; 162
+ 1ca:	80 83       	st	Z, r24
 	TCCR1B = 0;																	// LIMPIAR TCCRB
- 220:	e1 e8       	ldi	r30, 0x81	; 129
- 222:	f0 e0       	ldi	r31, 0x00	; 0
- 224:	10 82       	st	Z, r1
+ 1cc:	e1 e8       	ldi	r30, 0x81	; 129
+ 1ce:	f0 e0       	ldi	r31, 0x00	; 0
+ 1d0:	10 82       	st	Z, r1
 	TCCR1B = (1 << WGM13) | (1 << WGM12);										// MODO FAST PWM (parte alta)
- 226:	88 e1       	ldi	r24, 0x18	; 24
- 228:	80 83       	st	Z, r24
+ 1d2:	88 e1       	ldi	r24, 0x18	; 24
+ 1d4:	80 83       	st	Z, r24
 	TCCR1B |= (1 << CS11);														// PRESCALER PWM 8
- 22a:	90 81       	ld	r25, Z
- 22c:	92 60       	ori	r25, 0x02	; 2
- 22e:	90 83       	st	Z, r25
+ 1d6:	90 81       	ld	r25, Z
+ 1d8:	92 60       	ori	r25, 0x02	; 2
+ 1da:	90 83       	st	Z, r25
 	//TCCR1B |= (1 << ICNC1);														// noise canceler
 	ICR1 = TOP;																	// valor maximo para ICR1 "19999"
- 230:	30 93 87 00 	sts	0x0087, r19	; 0x800087 <__TEXT_REGION_LENGTH__+0x7f8087>
- 234:	20 93 86 00 	sts	0x0086, r18	; 0x800086 <__TEXT_REGION_LENGTH__+0x7f8086>
- 238:	08 95       	ret
+ 1dc:	30 93 87 00 	sts	0x0087, r19	; 0x800087 <__TEXT_REGION_LENGTH__+0x7f8087>
+ 1e0:	20 93 86 00 	sts	0x0086, r18	; 0x800086 <__TEXT_REGION_LENGTH__+0x7f8086>
+ 1e4:	08 95       	ret
 
-0000023a <_exit>:
- 23a:	f8 94       	cli
+000001e6 <_exit>:
+ 1e6:	f8 94       	cli
 
-0000023c <__stop_program>:
- 23c:	ff cf       	rjmp	.-2      	; 0x23c <__stop_program>
+000001e8 <__stop_program>:
+ 1e8:	ff cf       	rjmp	.-2      	; 0x1e8 <__stop_program>
