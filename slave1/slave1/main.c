@@ -16,6 +16,7 @@
 #define SlaveAdress 0x30
 volatile uint8_t buffer;
 volatile uint8_t adc_value;
+uint8_t porcentaje_humedad;
 
 //Function prototypes
 
@@ -55,6 +56,7 @@ int main(void)
 ISR(ADC_vect)
 {
 	adc_value =  ADCH;
+	porcentaje_humedad = 100 - ((adc_value * 100) / 255);
 	ADCSRA |= (1 << ADIF);
 }
 
@@ -78,7 +80,7 @@ ISR(TWI_vect)
 		case 0xA8: //SLA+R
 		case 0xB8: //Dato enviado, ACK --> Slave
 			PORTC |= (1 << PORTC3);
-			TWDR = 0x31; //Enviar valor del sensor
+			TWDR = porcentaje_humedad;														//Enviar valor del sensor
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		case 0xC0: //Dato transmitido, ACK --> slave

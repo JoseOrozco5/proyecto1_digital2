@@ -77,7 +77,7 @@ ISR(TWI_vect)
 		case 0xA8: //SLA+R
 		case 0xB8: //Dato enviado, ACK --> Slave
 			//PORTC |= (1 << PORTC3);
-			TWDR = 0x32; //Enviar valor del sensor
+			TWDR = adc_value;														//Enviar valor del sensor
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		case 0xC0: //Dato transmitido, ACK --> slave
