@@ -44,7 +44,6 @@ uint8_t LM75_to_uintC(uint8_t dato_high, uint8_t dato_low);
 //////////////////////////// Main Loop //////////////////////////////
 int main(void)
 {
-	setup();
 	init_LCD8bits();
 	init_UART();
 	I2C_MASTER_INIT(100000,4);
@@ -84,14 +83,14 @@ int main(void)
 		snprintf(buffer1, sizeof(buffer1), "%3u%% ", bufferI2C_1);
 		LCD_Write_String(buffer1);
 		//if de motor dc aqui
-		if (bufferI2C_1 < 10)
-		{
-			PORTB |= (1 << PORTB4);
-		}
-		else
-		{
-			PORTB &= ~(1 << PORTB4);
-		}
+		//if (bufferI2C_1 < 10)
+		//{
+			//PORTB |= (1 << PORTB4);
+		//}
+		//else
+		//{
+			//PORTB &= ~(1 << PORTB4);
+		//}
 		I2C_MASTER_STOP();
 		//----------------------------SLAVE 2----------------------------//
 		if (!I2C_MASTER_START()) return;									//No avanzar hasta realizar correctamente el start
@@ -151,12 +150,7 @@ int main(void)
 	}
 }
 ////////////////////// Non-interrupt function ///////////////////////////
-void setup(void)
-{
-	DDRB |= (1 << DDB4);
-	PORTC &= ~(1 << PORTC4);													//MOTOR DC EN PB4
-	
-}
+
 uint8_t LM75_to_uintC(uint8_t dato_high, uint8_t dato_low)
 {
 	int16_t raw = ((int16_t)dato_high << 8) | dato_low;

@@ -18,6 +18,7 @@
 #define SlaveAdress 0x50
 uint8_t buffer;
 volatile uint8_t adc_value;
+uint8_t servo;
 
 //Function prototypes
 
@@ -40,6 +41,14 @@ int main(void)
 		{
 			PORTC |= (1 << PORTC3);
 			buffer = 0;
+			if (adc_value > 100)
+			{
+				pulso_PWM1(140);
+			}
+			else
+			{
+				pulso_PWM1(0);
+			}
 		}
 		//Secuencia ADC
 		ADCSRA |= (1 << ADSC);

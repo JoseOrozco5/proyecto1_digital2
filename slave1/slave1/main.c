@@ -19,7 +19,7 @@ volatile uint8_t adc_value;
 uint8_t porcentaje_humedad;
 
 //Function prototypes
-
+void setup(void);
 //Main
 
 int main(void)
@@ -32,6 +32,7 @@ int main(void)
 	PORTD &= ~(1 << PORTD3);					//led para mostrar que se recibio un dato
 	DDRC |= (1 << DDC3);
 	PORTC &= ~(1 << PORTC3);					//debuggeo manual del case
+	setup();
 	init_ADC();
 	init_PWM1(19999);
 	I2C_SLAVE_INIT(SlaveAdress);
@@ -42,6 +43,15 @@ int main(void)
 		{
 			PORTD |= (1 << PORTD3);
 			buffer = 0;
+			//if de motor dc aqui
+			if (porcentaje_humedad < 10)
+			{
+				PORTB |= (1 << PORTB4);
+			}
+			else
+			{
+				PORTB &= ~(1 << PORTB4);
+			}
 		}
 		//Secuencia ADC
 		ADCSRA |= (1 << ADSC);
@@ -49,7 +59,12 @@ int main(void)
 }
 
 //NON-Interrupt subroutines
-
+void setup(void)
+{
+	DDRB |= (1 << DDB4);
+	PORTC &= ~(1 << PORTC4);													//MOTOR DC EN PB4
+	
+}
 //Interrupt routines
 
 
