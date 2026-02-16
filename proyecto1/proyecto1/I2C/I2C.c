@@ -67,7 +67,7 @@ uint8_t I2C_MASTER_WRITE(uint8_t data)
 	while(!(TWCR & (1 << TWINT))); //interrupt flag
 	state = TWSR & 0xF8; //Extraer registros de estado
 	// SLA + W + ACK | Data + ACK
-	if ((state == 0x18) || (state == 0x28)) return 1;
+	if ((state == 0x18) || (state == 0x28) || (state == 0x40)) return 1;
 	else return state;
 }
 //Protocolo para leer S --> M

@@ -23,21 +23,20 @@
 #define slave1W (0x30 << 1) & 0xFE															//Slave 1 write
 #define slave2R (0x50 << 1) | 0x01															//Slave 2 read
 #define slave2W (0x50 << 1) & 0xFE															//Slave 2 write
-#define LM75_ADDR 0x48																		//Direccion sensor temperatura
-#define LM75_R (LM75_ADDR << 1) | 0x01
-#define LM75_W (LM75_ADDR << 1) & 0xFE
+#define LM75_R (0x48 << 1) | 0x01
+#define LM75_W (0x48 << 1) & 0xFE
 
 
 uint8_t direccion;
 uint8_t temp;
 uint8_t bufferI2C_1 = 0;
 uint8_t bufferI2C_2 = 0;
-uint8_t temp_h, temp_l;
+uint16_t temp_h, temp_l;
 uint8_t temperatura;
 char signal;
 char buffer1[7];
 char buffer2[7];
-char buffer3[7];
+char buffer3[8];
 
 //Function prototypes
 void setup(void);
@@ -49,11 +48,11 @@ int main(void)
 	init_LCD8bits();
 	init_UART();
 	I2C_MASTER_INIT(100000,4);
-	LCD_Set_Cursor(2,1);
+	LCD_Set_Cursor(1,1);
 	LCD_Write_String("HUM:");
 	LCD_Set_Cursor(7,1);
 	LCD_Write_String("S2:");
-	LCD_Set_Cursor(13,1);
+	LCD_Set_Cursor(12,1);
 	LCD_Write_String("TEMP:");
 	DDRC |= (1 << DDC3);
 	PORTC &= ~(1 << PORTC3);
@@ -79,7 +78,6 @@ int main(void)
 			I2C_MASTER_STOP();
 			return;
 		}
-		PORTC |= (1 << PORTC3);
 		I2C_MASTER_READ(&bufferI2C_1,0);									//NACK
 		//Imprimir datos en la LCD
 		LCD_Set_Cursor(1,2);
@@ -122,33 +120,34 @@ int main(void)
 		LCD_Write_String(buffer2);
 		I2C_MASTER_STOP();
 		//------------------------Sensor I2C----------------------------//
-		//if (!I2C_MASTER_START()) return;									//No avanzar hasta realizar correctamente el start
-		//if (!I2C_MASTER_WRITE(LM75_W))										//Esperar a que slave responda si esta escuchando
-		//{
-			//I2C_MASTER_STOP();
-			//return;
-		//}
-		////Comando para leer datos de slave
-		//I2C_MASTER_WRITE(0x00);
-		//if (!I2C_MASTER_R_START())											//Empezar a leer
-		//{
-			//I2C_MASTER_STOP();
-			//return;
-		//}
-		//if (!I2C_MASTER_WRITE(LM75_R))										//Si no esta escribiendo, cortar comunicacion
-		//{
-			//I2C_MASTER_STOP();
-			//return;
-		//}
-		////Leer dos bytes del LM75
-		//I2C_MASTER_READ(&temp_h,1);											
-		//I2C_MASTER_READ(&temp_l,0);
-		//temperatura = LM75_to_uintC(temp_h,temp_l);
-		////Mostrar temperatura en lcd
-		//LCD_Set_Cursor(13,2);
-		//snprintf(buffer3, sizeof(buffer3), "%3u ", temperatura);
-		//LCD_Write_String(buffer3);
-		//I2C_MASTER_STOP();		
+  		if (!I2C_MASTER_START()) return;									//No avanzar hasta realizar correctamente el start
+  		if (!I2C_MASTER_WRITE(LM75_W))										//Esperar a que slave responda si esta escuchando
+  		{
+  			I2C_MASTER_STOP();
+  			return;
+  		}
+  		//Comando para leer datos de slave
+  		I2C_MASTER_WRITE(0x00);
+  		I2C_MASTER_STOP();
+  		if (!I2C_MASTER_START()) return;
+  		if (!I2C_MASTER_WRITE(LM75_R))										//Si no esta escribiendo, cortar comunicacion
+  		{
+  			I2C_MASTER_STOP();
+  			return;
+  		}
+ 		  
+   		//Leer dos bytes del LM75
+   		I2C_MASTER_READ(&temp_h,1);
+		I2C_MASTER_READ(&temp_l,0);
+		
+		PORTC |= (1 << PORTC3);  
+		I2C_MASTER_STOP();
+  		temperatura = LM75_to_uintC(temp_h,temp_l);
+  		//Mostrar temperatura en lcd
+  		LCD_Set_Cursor(13,2);
+  		snprintf(buffer3, sizeof(buffer3), "%3u ", temperatura);
+  		LCD_Write_String(buffer3);
+ 
 	}
 }
 ////////////////////// Non-interrupt function ///////////////////////////
