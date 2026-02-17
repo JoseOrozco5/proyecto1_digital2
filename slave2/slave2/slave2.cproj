@@ -126,6 +126,12 @@
     <Compile Include="ADC\ADC.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="HX711\HX711.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HX711\XH711.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="I2C\I2C.c">
       <SubType>compile</SubType>
     </Compile>
@@ -145,6 +151,7 @@
   <ItemGroup>
     <Folder Include="ADC" />
     <Folder Include="I2C" />
+    <Folder Include="HX711" />
     <Folder Include="PWM1" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />

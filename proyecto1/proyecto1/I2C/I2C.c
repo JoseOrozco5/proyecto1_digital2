@@ -82,6 +82,7 @@ uint8_t I2C_MASTER_READ(uint8_t *buffer, uint8_t ack)
 	{
 		TWCR = (1 << TWINT) | (1<< TWEN);
 	}
+	
 	while(!(TWCR & (1 << TWINT))); //int flag
 	state = TWSR & 0xF8;
 	if (ack && state != 0x50) return 0; //Estado ACK

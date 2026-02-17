@@ -35,12 +35,14 @@ LINKER_SCRIPT_DEP:=
 SUBDIRS :=  \
 ../ADC \
 ../I2C \
+../HX711 \
 ../PWM1
 
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../ADC/ADC.c \
+../HX711/HX711.c \
 ../I2C/I2C.c \
 ../main.c \
 ../PWM1/pwm1.c
@@ -54,24 +56,28 @@ ASM_SRCS +=
 
 OBJS +=  \
 ADC/ADC.o \
+HX711/HX711.o \
 I2C/I2C.o \
 main.o \
 PWM1/pwm1.o
 
 OBJS_AS_ARGS +=  \
 ADC/ADC.o \
+HX711/HX711.o \
 I2C/I2C.o \
 main.o \
 PWM1/pwm1.o
 
 C_DEPS +=  \
 ADC/ADC.d \
+HX711/HX711.d \
 I2C/I2C.d \
 main.d \
 PWM1/pwm1.d
 
 C_DEPS_AS_ARGS +=  \
 ADC/ADC.d \
+HX711/HX711.d \
 I2C/I2C.d \
 main.d \
 PWM1/pwm1.d
@@ -91,6 +97,13 @@ LINKER_SCRIPT_DEP+=
 
 # AVR32/GNU C Compiler
 ADC/ADC.o: ../ADC/ADC.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+HX711/HX711.o: ../HX711/HX711.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

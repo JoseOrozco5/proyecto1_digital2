@@ -4,6 +4,8 @@
 
 ADC\ADC.c
 
+HX711\HX711.c
+
 I2C\I2C.c
 
 main.c
