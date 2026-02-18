@@ -11,6 +11,7 @@
 //NON-Interrupt subroutinnes
 
 void init_HX711(void){
+	
 	DDRC |=  (1 << DDC1);			//SALIDA SCK en PC1
 	DDRC &= ~(1 << DDC2);			//ENTRADA DT EN PC2
 	PORTC &= ~(1 << PORTC1);		//SCK APAGADO inicialmente
@@ -18,8 +19,9 @@ void init_HX711(void){
 }
 
 uint8_t sensor_listo(void){
-	return ((PINC & (1 << PORTC2)) == 0);	//revisar si DT esta en 0 (osea listo para entregar datos) y devuelve 1 cuando ya tiene un dato
+	return ((PINC & (1 << PC2)) == 0);	//revisar si DT esta en 0 (osea listo para entregar datos) y devuelve 1 cuando ya tiene un dato
 }
+
 
 int32_t leer_24bits(void){
 	uint32_t data = 0;
@@ -28,7 +30,7 @@ int32_t leer_24bits(void){
 	for (uint8_t i = 0; i < 24; i++)
 	{
 		PORTC |= (1 << PORTC1);				//SCK en 1
-		_delay_us(100);
+		_delay_us(1);
 		
 		data <<= 1;							//DESPLAZAR BITS UNA POSICION A LA IZQUIERDA
 		
@@ -37,7 +39,7 @@ int32_t leer_24bits(void){
 			data |= 1;						//leer bit actual
 		}
 		PORTC &= ~(1 << PORTC1);			//BAJAR CLOCK
-		_delay_us(100);
+		_delay_us(1);
 	}
 	//pulso extra para selecionar A128
 	PORTC |= (1 << PORTC1);					//sck

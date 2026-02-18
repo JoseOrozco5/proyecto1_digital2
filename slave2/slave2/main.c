@@ -52,11 +52,11 @@ const uint8_t r_secuencia[8] =
 };
 
 //----------------Variables sensor de peso-----------------------------------//
-uint8_t byte_h, byte_m, byte_l =0;
-int32_t gram;
-uint8_t indice = 0;
+uint8_t byte_h, byte_m, byte_l;
+int32_t gramos;
+uint8_t indice;
 
-HX711 calibracion = {0, 100.0f};
+HX711 calibracion = {0, 597.4f};
 
 
 //Function prototypes
@@ -81,20 +81,21 @@ int main(void)
 	I2C_SLAVE_INIT(SlaveAdress);
 	init_stepper();
 	init_timer1();
-	sei(); 
-	int32_t boton_tare = lectura_promedio(10);
-	tara_bascula(&calibracion, boton_tare);
+	sei();
+	_delay_ms(200);
+	int32_t offset = lectura_promedio(30);
+	tara_bascula(&calibracion, offset);
     while (1) 
     {		
 		if (buffer == 'T')
 		{
 			PORTC |= (1 << PORTC3);
 			buffer = 0;
-			if (gram >= 150)
+			if (gramos >= 150)
 			{
 				pulso_PWM1(140);
 			}
-			else if (gram <= 300)
+			else if (gramos <= 300)
 			{
 				pulso_PWM1(0);
 			}
@@ -150,18 +151,18 @@ int main(void)
 		}
 		//-----------------PESO----------------------------------------------//
 		
-		int32_t entero = lectura_promedio(8);
-		float peso = peso_real(&calibracion, entero);
-		
-		if (peso < 0)
+		int32_t entero = lectura_promedio(20);
+ 		float peso = -peso_real(&calibracion, entero);
+ 		
+ 		if (peso < 0)
 		{
 			peso = 0;
 		}
-		gram = (int32_t) peso;
+ 		gramos = (int32_t) (peso + 0.5f);
 		cli();
-		byte_h = (entero >> 16) & 0xFF;
-		byte_m = (entero >> 8) & 0xFF;
-		byte_l = entero & 0xFF;
+		byte_h = (gramos >> 16) & 0xFF;
+		byte_m = (gramos >> 8) & 0xFF;
+		byte_l = gramos & 0xFF;
 		sei();
 		
     }
@@ -225,29 +226,31 @@ ISR(TWI_vect)
 			break;
 		// Enviar datos desde slave
 		case 0xA8: //SLA+R
+			indice = 0;
+			TWDR = byte_h;
+			indice = 1;
+			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
+			break;
+			
 		case 0xB8: //Dato enviado, ACK --> Slave
 			//PORTC |= (1 << PORTC3);
 			
-			if (indice == 0)
-			{
-				indice = 1;
-				TWDR = byte_h;
-			}
 			if (indice == 1)
 			{
 				indice = 2;
 				TWDR = byte_m;
 			}
-			if (indice == 2)
+			else
 			{
 				indice = 0;
 				TWDR = byte_l;
 			}
-			
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
+			
 		case 0xC0: //Dato transmitido, ACK --> slave
 		case 0xC8: //Ultimo dato transmitido
+			indice = 0;
 			TWCR = 0;
 			TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWEA); //(1 << TWINT)
 			break;

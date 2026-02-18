@@ -38,7 +38,7 @@ int32_t pesaje;
 uint8_t peso_1, peso_2, peso_3;
 char signal;
 char buffer1[7];
-char buffer2[7];
+char buffer2[10];
 char buffer3[8];
 
 //Function prototypes
@@ -112,7 +112,7 @@ int main(void)
   		I2C_MASTER_READ(&peso_3, 0);
  		LCD_Set_Cursor(7,2);
 		pesaje = mandar_24bit(peso_1, peso_2, peso_3);
- 		snprintf(buffer2, sizeof(buffer2), "%ldg ", (long)pesaje);
+ 		snprintf(buffer2, sizeof(buffer2), "%ldg   ", (long)pesaje);
  		LCD_Write_String(buffer2);											//Imprimir datos en la LCD
  		I2C_MASTER_STOP();
 // 		LCD_Set_Cursor(7,2);
@@ -144,8 +144,8 @@ int main(void)
 		I2C_MASTER_STOP();
   		temperatura = LM75_to_uintC(temp_h,temp_l);
   		//Mostrar temperatura en lcd
-  		LCD_Set_Cursor(13,2);
-  		snprintf(buffer3, sizeof(buffer3), "%3u%cC ", temperatura);
+  		LCD_Set_Cursor(12,2);
+  		snprintf(buffer3, sizeof(buffer3), "%3u%cC ", temperatura, 223);
   		LCD_Write_String(buffer3);
 		//----------------Mandar temperatura a Slave 2-----------------//
 		if (!I2C_MASTER_START()) continue;									//No avanzar hasta realizar correctamente el start
