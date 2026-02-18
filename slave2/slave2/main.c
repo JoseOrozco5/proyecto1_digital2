@@ -16,7 +16,7 @@
 #include "I2C/I2C.h"
 #include "HX711/XH711.h"
 //Variables globales
-#define TEMP_HIGH 24
+#define TEMP_HIGH 25
 #define TEMP_LOW 21
 #define SlaveAdress 0x50
 uint8_t buffer;
@@ -56,7 +56,7 @@ uint8_t byte_h, byte_m, byte_l =0;
 int32_t gram;
 uint8_t indice = 0;
 
-HX711 calibracion = {0, 500.0f};
+HX711 calibracion = {0, 100.0f};
 
 
 //Function prototypes
@@ -149,6 +149,7 @@ int main(void)
 			PORTD &= ~((1 << PORTD2) | (1 << PORTD3) | (1 << PORTD4) | (1 << PORTD5));
 		}
 		//-----------------PESO----------------------------------------------//
+		
 		int32_t entero = lectura_promedio(8);
 		float peso = peso_real(&calibracion, entero);
 		
@@ -158,10 +159,11 @@ int main(void)
 		}
 		gram = (int32_t) peso;
 		cli();
-		byte_h = (gram >> 16) & 0xFF;
-		byte_m = (gram >> 8) & 0xFF;
-		byte_l = gram & 0xFF;
+		byte_h = (entero >> 16) & 0xFF;
+		byte_m = (entero >> 8) & 0xFF;
+		byte_l = entero & 0xFF;
 		sei();
+		
     }
 }
 
@@ -225,21 +227,23 @@ ISR(TWI_vect)
 		case 0xA8: //SLA+R
 		case 0xB8: //Dato enviado, ACK --> Slave
 			//PORTC |= (1 << PORTC3);
+			
 			if (indice == 0)
 			{
 				indice = 1;
-				byte_h = TWDR;
+				TWDR = byte_h;
 			}
 			if (indice == 1)
 			{
 				indice = 2;
-				byte_m = TWDR;
+				TWDR = byte_m;
 			}
 			if (indice == 2)
 			{
 				indice = 0;
-				byte_l = TWDR;
+				TWDR = byte_l;
 			}
+			
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		case 0xC0: //Dato transmitido, ACK --> slave

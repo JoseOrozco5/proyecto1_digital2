@@ -38,7 +38,7 @@ int32_t pesaje;
 uint8_t peso_1, peso_2, peso_3;
 char signal;
 char buffer1[7];
-char buffer2[12];
+char buffer2[7];
 char buffer3[8];
 
 //Function prototypes
@@ -54,7 +54,7 @@ int main(void)
 	I2C_MASTER_INIT(100000,4);
 	LCD_Set_Cursor(1,1);
 	LCD_Write_String("HUM:");
-	LCD_Set_Cursor(7,1);
+	LCD_Set_Cursor(6,1);
 	LCD_Write_String("PESO:");
 	LCD_Set_Cursor(12,1);
 	LCD_Write_String("TEMP:");
@@ -87,15 +87,6 @@ int main(void)
 		LCD_Set_Cursor(1,2);
 		snprintf(buffer1, sizeof(buffer1), "%3u%% ", bufferI2C_1);
 		LCD_Write_String(buffer1);
-		//if de motor dc aqui
-		//if (bufferI2C_1 < 10)
-		//{
-			//PORTB |= (1 << PORTB4);
-		//}
-		//else
-		//{
-			//PORTB &= ~(1 << PORTB4);
-		//}
 		I2C_MASTER_STOP();
 		//----------------------------SLAVE 2----------------------------//
 		if (!I2C_MASTER_START()) continue;									//No avanzar hasta realizar correctamente el start
@@ -116,11 +107,11 @@ int main(void)
 			I2C_MASTER_STOP();
 			continue;
 		}
- 		I2C_MASTER_READ(&peso_1, 1);
- 		I2C_MASTER_READ(&peso_2, 1);
- 		I2C_MASTER_READ(&peso_3, 0);
- 		pesaje = mandar_24bit(peso_1, peso_2, peso_3);
+  		I2C_MASTER_READ(&peso_1, 1);
+  		I2C_MASTER_READ(&peso_2, 1);
+  		I2C_MASTER_READ(&peso_3, 0);
  		LCD_Set_Cursor(7,2);
+		pesaje = mandar_24bit(peso_1, peso_2, peso_3);
  		snprintf(buffer2, sizeof(buffer2), "%ldg ", (long)pesaje);
  		LCD_Write_String(buffer2);											//Imprimir datos en la LCD
  		I2C_MASTER_STOP();
