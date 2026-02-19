@@ -20,9 +20,14 @@
 #define TEMP_LOW 21
 #define SlaveAdress 0x50
 uint8_t buffer;
-volatile uint8_t adc_value;
+
+uint8_t esperando_dato;
+uint8_t cmd_actual;
 //--------------------Variables sensor de temperatura------------------------//
 uint8_t temperatura;
+uint8_t bandera_DC = 0;
+uint8_t bandera_STEPPER = 0;
+uint8_t bandera_SERVO = 0;
 uint8_t bandera_nuestra;
 uint8_t dato_temperatura;
 //-------------------Variables del stepper-----------------------------------//
@@ -55,7 +60,7 @@ const uint8_t r_secuencia[8] =
 uint8_t byte_h, byte_m, byte_l;
 int32_t gramos;
 uint8_t indice;
-
+uint8_t  bam = 0;
 HX711 calibracion = {0, 597.4f};
 
 
@@ -87,10 +92,17 @@ int main(void)
 	tara_bascula(&calibracion, offset);
     while (1) 
     {		
-		if (buffer == 'T')
+		
+		if (bandera_SERVO == 2)
 		{
-			PORTC |= (1 << PORTC3);
-			buffer = 0;
+			pulso_PWM1(0);
+		}
+		else if (bandera_SERVO == 1)
+		{
+			pulso_PWM1(140);
+		}
+		else
+		{
 			if (gramos >= 150)
 			{
 				pulso_PWM1(140);
@@ -190,11 +202,6 @@ ISR(TIMER1_OVF_vect)
 	TCNT1 = 65286;
 }
 
-ISR(ADC_vect)
-{
-	adc_value =  ADCH;
-	ADCSRA |= (1 << ADIF);
-}
 
 ISR(TWI_vect)
 {
@@ -205,22 +212,34 @@ ISR(TWI_vect)
 		// ---> Slave
 		case 0x60:
 		case 0x70:
+			esperando_dato = 0;
+			cmd_actual = 0;
 			TWCR |= (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		case 0x80:
 		case 0x90:
-			dato_temperatura = TWDR;
-			if (bandera_nuestra)
+			buffer = TWDR;
+			if (!esperando_dato)
 			{
-				temperatura = dato_temperatura;
-				bandera_nuestra = 0;
-			}else{
-				buffer = TWDR;
-				if (buffer == 'K')
+				cmd_actual = buffer;
+				esperando_dato = 1;
+			}
+			else
+			{
+				switch (cmd_actual)
 				{
-					bandera_nuestra = 1;
-					buffer = 0;
+					case 'K':
+						temperatura = buffer;
+						break;
+					case 'T':
+						bandera_SERVO = buffer;
+						break;
+					case 'S':
+						bandera_STEPPER = buffer;
+						break;
 				}
+				esperando_dato = 0;
+				cmd_actual = 0;
 			}
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
@@ -255,6 +274,8 @@ ISR(TWI_vect)
 			TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWEA); //(1 << TWINT)
 			break;
 		case 0xA0: //STOP | R_START recibido
+			esperando_dato = 0;
+			cmd_actual = 0;
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		//Errores

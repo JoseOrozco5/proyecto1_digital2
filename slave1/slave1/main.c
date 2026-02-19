@@ -17,6 +17,10 @@
 volatile uint8_t buffer;
 volatile uint8_t adc_value;
 uint8_t porcentaje_humedad;
+uint8_t dato_recibido;
+uint8_t bandera_DC = 0;
+uint8_t cmd_actual;
+uint8_t esperando_dato;
 
 //Function prototypes
 void setup(void);
@@ -39,11 +43,16 @@ int main(void)
 	sei();
     while (1) 
     {
-		if (buffer == 'C')
+		if (bandera_DC == 2)
 		{
-			PORTD |= (1 << PORTD3);
-			buffer = 0;
-			//if de motor dc aqui
+			PORTB &= ~(1 << PORTB4);
+		}
+		else if (bandera_DC == 1)
+		{
+			PORTB |= (1 << PORTB4);
+		}
+		else
+		{
 			if (porcentaje_humedad < 10)
 			{
 				PORTB |= (1 << PORTB4);
@@ -53,6 +62,8 @@ int main(void)
 				PORTB &= ~(1 << PORTB4);
 			}
 		}
+		
+		
 		//Secuencia ADC
 		ADCSRA |= (1 << ADSC);
     }
@@ -84,15 +95,34 @@ ISR(TWI_vect)
 		// --> Slave
 		case 0x60:
 		case 0x70:
+			esperando_dato = 0;
+			cmd_actual = 0;
 			TWCR |= (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		case 0x80:
 		case 0x90:
 			buffer = TWDR;
+			if (!esperando_dato)
+			{
+				cmd_actual = buffer;
+				esperando_dato = 1;
+			}
+			else
+			{
+				if (cmd_actual == 'C')
+				{
+					bandera_DC = buffer;
+				}
+				esperando_dato = 0;
+				cmd_actual = 0;
+			}
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		// Enviar datos desde slave
 		case 0xA8: //SLA+R
+			TWDR = porcentaje_humedad;														//Enviar valor del sensor
+			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
+			break;
 		case 0xB8: //Dato enviado, ACK --> Slave
 			PORTC |= (1 << PORTC3);
 			TWDR = porcentaje_humedad;														//Enviar valor del sensor
@@ -104,6 +134,8 @@ ISR(TWI_vect)
 			TWCR =  (1 << TWEN) | (1 << TWIE) | (1 << TWEA);  //(1 << TWINT);
 			break;
 		case 0xA0: //STOP | R_START recibido
+			esperando_dato = 0;
+			cmd_actual = 0;
 			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWIE) | (1 << TWEA);
 			break;
 		//Errores

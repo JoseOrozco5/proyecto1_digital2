@@ -10,6 +10,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdio.h>																//snprintf
+#include <stdlib.h>																// para atoi
 #include "I2C/I2C.h"
 #include "UART/UART.h"
 #include "LCD/LCD.h"
@@ -40,6 +41,19 @@ char signal;
 char buffer1[7];
 char buffer2[10];
 char buffer3[8];
+char buffer_uart[30];
+char buffer_uart2[30];
+char buffer_uart3[30];
+
+
+//----------------------------UART----------------------------//
+char dato;
+uint8_t modo = 0;
+uint8_t bandera_DC = 0;
+uint8_t bandera_STEPPER = 0;
+uint8_t bandera_SERVO = 0;
+char recibe[10]; //Datos enviados del esp32
+uint8_t r_index = 0; //index de array de empaquetamiento de datos
 
 //Function prototypes
 void setup(void);
@@ -72,6 +86,7 @@ int main(void)
 		}
 		//Comando para leer datos de slave
 		I2C_MASTER_WRITE('C');
+		I2C_MASTER_WRITE(bandera_DC);
 		if (!I2C_MASTER_R_START())											//Empezar a leer
 		{
 			I2C_MASTER_STOP();
@@ -87,6 +102,8 @@ int main(void)
 		LCD_Set_Cursor(1,2);
 		snprintf(buffer1, sizeof(buffer1), "%3u%% ", bufferI2C_1);
 		LCD_Write_String(buffer1);
+		snprintf(buffer_uart2, sizeof(buffer_uart2), "H%d\n", bufferI2C_1);
+		writeString(buffer_uart2);
 		I2C_MASTER_STOP();
 		//----------------------------SLAVE 2----------------------------//
 		if (!I2C_MASTER_START()) continue;									//No avanzar hasta realizar correctamente el start
@@ -97,6 +114,7 @@ int main(void)
 		}
 		//Comando para leer datos de slave
 		I2C_MASTER_WRITE('T');
+		I2C_MASTER_WRITE(bandera_SERVO);
 		if (!I2C_MASTER_R_START())											//Empezar a leer
 		{
 			I2C_MASTER_STOP();
@@ -113,7 +131,9 @@ int main(void)
  		LCD_Set_Cursor(7,2);
 		pesaje = mandar_24bit(peso_1, peso_2, peso_3);
  		snprintf(buffer2, sizeof(buffer2), "%ldg   ", (long)pesaje);
- 		LCD_Write_String(buffer2);											//Imprimir datos en la LCD
+ 		LCD_Write_String(buffer2);
+		snprintf(buffer_uart3, sizeof(buffer_uart3), "P%ld\n" , (long)pesaje);
+		writeString(buffer_uart3);											//Imprimir datos en la LCD
  		I2C_MASTER_STOP();
 // 		LCD_Set_Cursor(7,2);
 // 		snprintf(buffer2, sizeof(buffer2), "%3u ", bufferI2C_2);
@@ -147,6 +167,8 @@ int main(void)
   		LCD_Set_Cursor(12,2);
   		snprintf(buffer3, sizeof(buffer3), "%3u%cC ", temperatura, 223);
   		LCD_Write_String(buffer3);
+		snprintf(buffer_uart, sizeof(buffer_uart), "T%d\n", temperatura);
+		writeString(buffer_uart);
 		//----------------Mandar temperatura a Slave 2-----------------//
 		if (!I2C_MASTER_START()) continue;									//No avanzar hasta realizar correctamente el start
 		if (!I2C_MASTER_WRITE(slave2W))										//Esperar a que slave responda si esta escuchando
@@ -157,6 +179,8 @@ int main(void)
 		//Comando para mandar datos de temperatura a slave2
 		I2C_MASTER_WRITE('K');
 		I2C_MASTER_WRITE(temperatura);
+		I2C_MASTER_WRITE('S');
+		I2C_MASTER_WRITE(bandera_STEPPER);
 		I2C_MASTER_STOP();
 	}
 }
@@ -183,5 +207,41 @@ int32_t mandar_24bit(uint8_t b2, uint8_t b1, uint8_t b0){							//reconstruye lo
 /////////////////////////// Interrupt function /////////////////////////
 ISR(USART_RX_vect)
 {
-	signal = UDR0;
+	dato = UDR0;
+	if (dato != '\n')
+	{
+		recibe[r_index++] = dato;
+		
+	}
+	else
+	{
+		recibe[r_index] = '\0';
+		r_index = 0;
+		if (recibe[0] == 'M')
+		{
+			if ((recibe[1] - '0') == 1)
+			{
+				modo = 1;
+			}
+			else if (recibe[1] - '0' == 0)
+			{
+				modo = 0;
+				bandera_SERVO = 0;
+				bandera_STEPPER = 0;
+				bandera_DC = 0;
+			}
+		}
+		else if (recibe[0] == 'T' && modo == 1)
+		{
+			bandera_STEPPER = atoi(&recibe[1]);
+		}
+		else if (recibe[0] == 'H' && modo == 1)
+		{
+			bandera_DC = atoi(&recibe[1]);
+		}
+		else if (recibe[0] == 'P' && modo == 1)
+		{
+			bandera_SERVO = atoi(&recibe[1]);
+		}
+	}
 }
