@@ -93,24 +93,13 @@ int main(void)
     while (1) 
     {		
 		
-		if (bandera_SERVO == 2)
+		if (gramos > 100)
 		{
-			pulso_PWM1(0);
-		}
-		else if (bandera_SERVO == 1)
-		{
-			pulso_PWM1(140);
+			pulso_PWM1(160);
 		}
 		else
 		{
-			if (gramos >= 150)
-			{
-				pulso_PWM1(140);
-			}
-			else if (gramos <= 300)
-			{
-				pulso_PWM1(0);
-			}
+			pulso_PWM1(0);
 		}
 		
 		//------------------TEMPERATURA-----------------------//
@@ -232,7 +221,7 @@ ISR(TWI_vect)
 						temperatura = buffer;
 						break;
 					case 'T':
-						bandera_SERVO = buffer;
+						bandera_STEPPER = buffer;
 						break;
 					case 'S':
 						bandera_STEPPER = buffer;

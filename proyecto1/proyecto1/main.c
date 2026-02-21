@@ -114,7 +114,7 @@ int main(void)
 		}
 		//Comando para leer datos de slave
 		I2C_MASTER_WRITE('T');
-		I2C_MASTER_WRITE(bandera_SERVO);
+		//I2C_MASTER_WRITE(bandera_SERVO);
 		if (!I2C_MASTER_R_START())											//Empezar a leer
 		{
 			I2C_MASTER_STOP();
